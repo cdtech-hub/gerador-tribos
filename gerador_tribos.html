@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guardiões do Amor Maior — Sistema</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF4500;--gold:#C8962A;--gold-lt:#F5C842;--cream:#FAF6EE;
+  --ink:#1A1208;--ash:#6B5E4A;--smoke:#EDE8DF;--success:#2D7D46;
+  --danger:#C0392B;--card:white;--border:rgba(200,150,42,.2);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(--ink);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 10% 10%,rgba(200,150,42,.07),transparent 60%),
+  radial-gradient(ellipse 50% 70% at 90% 90%,rgba(255,69,0,.05),transparent 60%);
+  pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:relative;z-index:10;background:var(--ink);display:flex;align-items:center;gap:0;padding:0 24px;height:56px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-brand{font-family:'Cinzel',serif;font-size:14px;font-weight:900;color:var(--gold-lt);letter-spacing:.08em;margin-right:auto;display:flex;align-items:center;gap:8px}
+.nav-tabs{display:flex;gap:0;height:100%}
+.nav-tab{font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.5);text-transform:uppercase;padding:0 18px;cursor:pointer;border:none;background:none;height:100%;border-bottom:3px solid transparent;transition:all .2s}
+.nav-tab:hover{color:rgba(255,255,255,.8)}
+.nav-tab.active{color:var(--gold-lt);border-bottom-color:var(--gold)}
+.nav-logout{font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;padding:6px 12px;border:1px solid rgba(255,255,255,.15);border-radius:20px;background:none;transition:all .2s;margin-left:12px}
+.nav-logout:hover{color:white;border-color:rgba(255,255,255,.4)}
+
+/* PAGES */
+.page{display:none;position:relative;z-index:1;max-width:860px;margin:0 auto;padding:36px 24px 80px}
+.page.active{display:block}
+
+/* HEADERS */
+.ph{margin-bottom:32px}
+.ph h1{font-family:'Cinzel',serif;font-size:26px;font-weight:900}
+.ph h1 span{color:var(--gold)}
+.ph p{font-size:14px;color:var(--ash);margin-top:6px;font-style:italic}
+
+/* SECTION LABEL */
+.slbl{font-family:'Cinzel',serif;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(200,150,42,.4),transparent)}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+
+/* UPLOAD ZONE */
+.drop{border:2px dashed rgba(200,150,42,.35);border-radius:14px;padding:40px 24px;text-align:center;cursor:pointer;transition:all .25s;background:rgba(255,255,255,.6)}
+.drop:hover,.drop.drag{border-color:var(--gold);background:white;transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,150,42,.12)}
+.drop.ok{border-style:solid;border-color:var(--success);background:rgba(45,125,70,.04)}
+.drop-ico{font-size:38px;margin-bottom:10px;display:block;transition:transform .2s}
+.drop:hover .drop-ico{transform:scale(1.08)}
+.drop-tit{font-family:'Cinzel',serif;font-size:15px;font-weight:600;margin-bottom:5px}
+.drop-dsc{font-size:13px;color:var(--ash)}
+.drop-ok{font-size:13px;color:var(--success);font-style:italic;margin-top:6px;display:none}
+.drop.ok .drop-ok{display:block}
+.drop.ok .drop-dsc{display:none}
+.drop-btn{display:inline-block;margin-top:12px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--gold);border:1px solid rgba(200,150,42,.4);border-radius:20px;padding:5px 14px}
+input[type=file]{display:none}
+
+/* BOTÕES */
+.btn{font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:.06em;border:none;border-radius:50px;padding:13px 36px;cursor:pointer;transition:all .25s}
+.btn-fire{color:white;background:linear-gradient(135deg,#C8962A,#FF4500);box-shadow:0 4px 16px rgba(200,150,42,.3)}
+.btn-fire:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,150,42,.4)}
+.btn-green{color:white;background:linear-gradient(135deg,var(--success),#1e5c32);box-shadow:0 4px 16px rgba(45,125,70,.3)}
+.btn-green:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,125,70,.4)}
+.btn-outline{color:var(--ash);background:none;border:1px solid rgba(107,94,74,.3)}
+.btn-outline:hover{border-color:var(--gold);color:var(--ink)}
+.btn:disabled{background:rgba(107,94,74,.2);color:rgba(107,94,74,.5);cursor:not-allowed;box-shadow:none;transform:none}
+.btn-sm{padding:8px 20px;font-size:11px}
+.btn-danger{color:white;background:var(--danger)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+
+/* PROGRESS */
+.prwrap{display:none;margin:20px 0}
+.prwrap.vis{display:block}
+.brbg{height:4px;border-radius:2px;background:var(--smoke);overflow:hidden;margin-bottom:14px}
+.brfl{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--fire));width:0;transition:width .5s}
+.steps{display:flex;flex-direction:column;gap:7px}
+.step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ash);opacity:.35;transition:all .3s}
+.step.active{opacity:1;color:var(--gold)}
+.step.done{opacity:1;color:var(--success)}
+.step.err{opacity:1;color:var(--danger)}
+
+/* RESULTADO */
+.reswrap{display:none;animation:fadein .4s}
+.reswrap.vis{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.res-ok{text-align:center;margin-bottom:24px}
+.res-ok .ico{font-size:40px;display:block;margin-bottom:8px}
+.res-ok h2{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:var(--success)}
+.res-ok p{font-size:13px;color:var(--ash);margin-top:4px}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+@media(max-width:480px){.sgrid{grid-template-columns:repeat(2,1fr)}}
+.scard{background:var(--smoke);border-radius:10px;padding:12px;text-align:center}
+.scard .num{font-family:'Cinzel',serif;font-size:24px;font-weight:600}
+.scard .lbl{font-size:11px;color:var(--ash);margin-top:2px}
+
+/* TRIBOS GRID */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+@media(max-width:580px){.tgrid{grid-template-columns:1fr}}
+.tcard{border-radius:10px;padding:10px 14px;border:1px solid rgba(0,0,0,.08)}
+.tcard-h{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.tdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.tcard-nm{font-family:'Cinzel',serif;font-size:11px;font-weight:600}
+.tcard-st{font-size:12px;color:var(--ash)}
+
+/* AVISOS */
+.avisos{margin-bottom:16px}
+.aviso{display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:6px}
+.aviso.warn{background:rgba(200,150,42,.08);border:1px solid rgba(200,150,42,.2);color:#7a5c1e}
+.aviso.err{background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.2);color:var(--danger)}
+
+/* CONFLITOS */
+.conf-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.conf-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.7);border:1px solid var(--border);border-radius:10px;font-size:13px}
+.conf-item .ci-nome{font-weight:600;flex:1}
+.conf-item .ci-motivo{font-size:12px;color:var(--ash);flex:2}
+.conf-item .ci-del{font-size:11px;cursor:pointer;color:var(--danger);border:1px solid rgba(192,57,43,.3);border-radius:12px;padding:3px 10px;background:none;font-family:'Cinzel',serif;flex-shrink:0}
+.conf-item .ci-del:hover{background:rgba(192,57,43,.08)}
+.conf-empty{font-size:13px;color:var(--ash);font-style:italic;padding:12px 0}
+
+/* FORM */
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:500px){.frow{grid-template-columns:1fr}}
+.frow.full{grid-template-columns:1fr}
+.fgrp{display:flex;flex-direction:column;gap:4px}
+.fgrp label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.fgrp input,.fgrp select,.fgrp textarea{font-family:'Crimson Pro',serif;font-size:14px;border:1px solid rgba(107,94,74,.25);border-radius:8px;padding:9px 12px;background:rgba(255,255,255,.8);color:var(--ink);outline:none;transition:border-color .2s;width:100%}
+.fgrp input:focus,.fgrp select:focus,.fgrp textarea:focus{border-color:var(--gold);background:white}
+.fgrp textarea{resize:vertical;min-height:60px}
+
+/* ETIQUETAS */
+.eta-opts{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.eta-opts label{font-size:13px;color:var(--ash);display:flex;align-items:center;gap:6px}
+.eta-opts input[type=number]{width:70px;font-family:'Crimson Pro',serif;font-size:14px;border:1px solid rgba(107,94,74,.25);border-radius:8px;padding:6px 10px;background:white;outline:none;color:var(--ink)}
+.eta-radio{display:flex;gap:16px;flex-wrap:wrap}
+.eta-radio label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+
+/* ERRBOX */
+.errbox{display:none;background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.25);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--danger);line-height:1.6;white-space:pre-wrap;margin-bottom:16px}
+.errbox.vis{display:block}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:rgba(200,150,42,.4);font-size:10px;font-family:'Cinzel',serif;letter-spacing:.1em}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,42,.3),transparent)}
+
+.badge{display:inline-block;font-size:10px;font-family:'Cinzel',serif;padding:2px 8px;border-radius:10px;font-weight:600}
+.badge-novo{background:rgba(45,125,70,.1);color:var(--success)}
+.badge-can{background:rgba(192,57,43,.1);color:var(--danger)}
+
+.novatos-box{background:rgba(45,125,70,.05);border:1px solid rgba(45,125,70,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px}
+.novatos-box h4{font-family:'Cinzel',serif;font-size:11px;color:var(--success);margin-bottom:8px;letter-spacing:.08em}
+.novato-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(45,125,70,.1)}
+.novato-row:last-child{border:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">🔥 Guardiões do Amor Maior</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('p-atualizar')">Atualizar</button>
+    <button class="nav-tab" onclick="goPage('p-conflitos')">Conflitos</button>
+    <button class="nav-tab" onclick="goPage('p-etiquetas')">Etiquetas</button>
+  </div>
+  <button class="nav-logout" onclick="logout()">Sair</button>
+</nav>
+
+<!-- ══════════════════════════════════ -->
+<!-- PÁGINA 1 — ATUALIZAR TRIBOS       -->
+<!-- ══════════════════════════════════ -->
+<div class="page active" id="p-atualizar">
+  <div class="ph">
+    <h1>Atualizar <span>Tribos</span></h1>
+    <p>Suba a exportação de inscrições — quem ficou mantém FC e tribo, novatos entram nas vagas</p>
+  </div>
+
+  <div class="card">
+    <p class="slbl">Arquivo de inscrições</p>
+    <label class="drop" id="drop" for="finput">
+      <span class="drop-ico" id="drop-ico">📋</span>
+      <div class="drop-tit" id="drop-tit">Arraste o CSV aqui</div>
+      <div class="drop-dsc">ou clique para selecionar &nbsp;·&nbsp; aceita <strong>.csv</strong> e <strong>.xlsx</strong></div>
+      <div class="drop-ok" id="drop-ok"></div>
+      <span class="drop-btn">Selecionar arquivo</span>
+      <input type="file" id="finput" accept=".csv,.xlsx,.xlsm,.xls">
+    </label>
+
+    <div class="errbox" id="err-atualizar"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-fire" id="btn-atualizar" disabled onclick="doAtualizar()">✦ Atualizar Tribos</button>
+    </div>
+  </div>
+
+  <div class="prwrap" id="pr-atualizar">
+    <div class="brbg"><div class="brfl" id="brfl-atualizar"></div></div>
+    <div class="steps" id="steps-atualizar"></div>
+  </div>
+
+  <div class="reswrap" id="res-atualizar">
+    <div class="res-ok">
+      <span class="ico">✅</span>
+      <h2>Tribos atualizadas com sucesso!</h2>
+      <p id="res-sub"></p>
+    </div>
+
+    <div class="avisos" id="avisos-box"></div>
+
+    <p class="slbl">Resumo</p>
+    <div class="sgrid" id="sgrid"></div>
+
+    <div class="novatos-box" id="novatos-box" style="display:none">
+      <h4>🆕 Novos campistas adicionados</h4>
+      <div id="novatos-list"></div>
+    </div>
+
+    <p class="slbl" style="margin-top:16px">Distribuição por tribo</p>
+    <div class="tgrid" id="tgrid"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-green" id="btn-dl-xlsx" onclick="dlXlsx()">⬇ Baixar Planilha Excel</button>
+      <button class="btn btn-outline btn-sm" onclick="doEtiquetasNovos()">🏷 Gerar etiquetas dos novatos</button>
+      <button class="btn btn-outline btn-sm" onclick="location.reload()">↺ Nova atualização</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- PÁGINA 2 — CONFLITOS              -->
+<!-- ══════════════════════════════════ -->
+<div class="page" id="p-conflitos">
+  <div class="ph">
+    <h1>Conflitos e <span>Restrições</span></h1>
+    <p>Campistas que nunca podem estar juntos, ou que devem sempre ficar com determinado anjo</p>
+  </div>
+
+  <p class="slbl">Restrições cadastradas</p>
+  <div class="conf-list" id="conf-list">
+    <div class="conf-empty">Carregando...</div>
+  </div>
+
+  <div class="divider">Adicionar nova restrição</div>
+
+  <div class="card">
+    <div class="frow">
+      <div class="fgrp">
+        <label>Nome do campista</label>
+        <input type="text" id="cf-nome" placeholder="Ex: Maria Aparecida Fonseca">
+      </div>
+      <div class="fgrp">
+        <label>Ficha (FC)</label>
+        <input type="number" id="cf-fc" placeholder="Ex: 95">
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fgrp">
+        <label>Tipo de restrição</label>
+        <select id="cf-tipo" onchange="updateConflitoCampos()">
+          <option value="nunca_tribo">Nunca em determinada tribo</option>
+          <option value="nunca_com_anjo">Nunca com determinado Anjo</option>
+          <option value="nunca_com_guardiao">Nunca com determinado Guardião</option>
+          <option value="sempre_com_anjo">Sempre com determinado Anjo</option>
+          <option value="sempre_com_guardiao">Sempre com determinado Guardião</option>
+        </select>
+      </div>
+      <div class="fgrp" id="cf-val-grp">
+        <label id="cf-val-label">Tribo(s) proibida(s)</label>
+        <input type="text" id="cf-val" placeholder="Ex: Zabulom">
+      </div>
+    </div>
+    <div class="frow full">
+      <div class="fgrp">
+        <label>Motivo / Observação</label>
+        <textarea id="cf-motivo" placeholder="Ex: Conflito pessoal com a tribo"></textarea>
+      </div>
+    </div>
+    <div class="errbox" id="err-conflito"></div>
+    <div class="btn-row">
+      <button class="btn btn-fire btn-sm" onclick="addConflito()">+ Adicionar Restrição</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- PÁGINA 3 — ETIQUETAS              -->
+<!-- ══════════════════════════════════ -->
+<div class="page" id="p-etiquetas">
+  <div class="ph">
+    <h1>Gerar <span>Etiquetas</span></h1>
+    <p>Arquivo .zpl para impressora Zebra GC420T · 5,5cm × 3,5cm</p>
+  </div>
+
+  <div class="card">
+    <p class="slbl" style="margin-bottom:16px">Opções</p>
+    <div class="eta-opts">
+      <div class="eta-radio" id="eta-quem">
+        <label><input type="radio" name="eta-quem" value="todos" checked> Todos os campistas</label>
+        <label><input type="radio" name="eta-quem" value="novos"> Só novatos da última atualização</label>
+      </div>
+    </div>
+    <div class="eta-opts">
+      <label>Cópias por campista:
+        <input type="number" id="eta-copias" value="4" min="1" max="10">
+      </label>
+    </div>
+    <div class="errbox" id="err-etiquetas"></div>
+    <div class="btn-row">
+      <button class="btn btn-fire" onclick="doEtiquetas()">🏷 Gerar Etiquetas ZPL</button>
+    </div>
+    <div id="eta-result" style="display:none;margin-top:16px">
+      <div style="font-size:14px;color:var(--success);margin-bottom:12px" id="eta-msg"></div>
+      <button class="btn btn-green" onclick="dlZpl()">⬇ Baixar arquivo .zpl</button>
+    </div>
+  </div>
+
+  <div class="card" style="font-size:13px;color:var(--ash);line-height:1.8">
+    <p class="slbl" style="margin-bottom:12px">Como usar</p>
+    <p>1. Clique em <strong>Gerar Etiquetas ZPL</strong> e baixe o arquivo <code>.zpl</code></p>
+    <p>2. Conecte a Zebra GC420T ao computador via USB</p>
+    <p>3. Abra o <strong>Zebra Setup Utility</strong> e envie o arquivo para a impressora</p>
+    <p>4. As etiquetas serão impressas automaticamente na sequência</p>
+  </div>
+</div>
+
+<script>
+// ── Estado global ──────────────────────────────────────────────
+let xlsxB64 = null;
+let zplB64  = null;
+let lastCampistas = [];
+let novosCampistas = [];
+
+const TRIBOS = ['Simeão','Rubem','Judá','Levi','Benjamim','Issacar','Gad','Zabulom','EFRAIM'];
+const TRIBO_COR = {
+  'Simeão':'#FFC000','Rubem':'#FF0000','Judá':'#FF6600','Levi':'#FF99CC',
+  'Benjamim':'#0070C0','Issacar':'#00B050','Gad':'#8B4513','Zabulom':'#000000','EFRAIM':'#BFBFBF'
+};
+const TRIBO_TXT = {
+  'Simeão':'#000','Rubem':'#fff','Judá':'#fff','Levi':'#000',
+  'Benjamim':'#fff','Issacar':'#fff','Gad':'#fff','Zabulom':'#fff','EFRAIM':'#000'
+};
+
+// ── Navegação ──────────────────────────────────────────────────
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = {
+    'p-atualizar': 0, 'p-conflitos': 1, 'p-etiquetas': 2
+  };
+  document.querySelectorAll('.nav-tab')[tabs[id]].classList.add('active');
+  if (id === 'p-conflitos') loadConflitos();
+}
+
+function logout() {
+  fetch('/logout', {method:'POST'}).then(() => location.href='/');
+}
+
+// ── Upload ─────────────────────────────────────────────────────
+let fileObj = null;
+document.getElementById('finput').addEventListener('change', e => setFile(e.target.files[0]));
+const drop = document.getElementById('drop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('drag'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('drag'); setFile(e.dataTransfer.files[0]); });
+
+function setFile(f) {
+  fileObj = f;
+  if (f) {
+    drop.classList.add('ok');
+    document.getElementById('drop-ico').textContent = '✅';
+    document.getElementById('drop-tit').textContent = 'Arquivo selecionado';
+    document.getElementById('drop-ok').textContent  = f.name;
+  }
+  document.getElementById('btn-atualizar').disabled = !f;
+  document.getElementById('err-atualizar').classList.remove('vis');
+  document.getElementById('res-atualizar').classList.remove('vis');
+}
+
+// ── Steps ──────────────────────────────────────────────────────
+const STEPS_ATU = [
+  {id:'upload', ic:'📤', lb:'Enviando arquivo de inscrições'},
+  {id:'proc',   ic:'🔍', lb:'Lendo e classificando campistas'},
+  {id:'casais', ic:'💑', lb:'Identificando casais'},
+  {id:'dist',   ic:'⚖️', lb:'Distribuindo novatos nas vagas'},
+  {id:'testes', ic:'✅', lb:'Rodando testes de integridade'},
+  {id:'gerar',  ic:'📝', lb:'Gerando planilha Excel'},
+];
+
+function initSteps(prefix, steps) {
+  const w = document.getElementById(`steps-${prefix}`);
+  w.innerHTML = '';
+  steps.forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'step'; d.id = `st-${prefix}-${s.id}`;
+    d.innerHTML = `<span style="width:20px;text-align:center;font-size:14px">${s.ic}</span><span>${s.lb}</span>`;
+    w.appendChild(d);
+  });
+  document.getElementById(`brfl-${prefix}`).style.width = '0%';
+}
+
+function setSt(prefix, id, state, steps) {
+  const el = document.getElementById(`st-${prefix}-${id}`);
+  if (el) el.className = 'step ' + state;
+  const idx = steps.findIndex(s => s.id === id);
+  document.getElementById(`brfl-${prefix}`).style.width = Math.round((idx+1)/steps.length*100) + '%';
+}
+
+// ── Atualizar tribos ───────────────────────────────────────────
+async function doAtualizar() {
+  document.getElementById('err-atualizar').classList.remove('vis');
+  document.getElementById('res-atualizar').classList.remove('vis');
+  document.getElementById('pr-atualizar').classList.add('vis');
+  document.getElementById('btn-atualizar').disabled = true;
+  xlsxB64 = null; novosCampistas = [];
+  initSteps('atualizar', STEPS_ATU);
+
+  setSt('atualizar','upload','active',STEPS_ATU);
+  const form = new FormData();
+  form.append('csv', fileObj);
+  form.append('filename', fileObj.name);
+
+  try {
+    const resp = await fetch('/api/atualizar', {method:'POST', body: form});
+    setSt('atualizar','upload','done',STEPS_ATU);
+    setSt('atualizar','proc','active',STEPS_ATU);
+    await sleep(200);
+    setSt('atualizar','proc','done',STEPS_ATU);
+    setSt('atualizar','casais','active',STEPS_ATU);
+
+    if (!resp.ok) {
+      const e = await resp.json().catch(()=>({}));
+      throw new Error(e.error || 'Erro no servidor: ' + resp.status);
+    }
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+
+    setSt('atualizar','casais','done',STEPS_ATU);
+    setSt('atualizar','dist','active',STEPS_ATU);
+    await sleep(200);
+    setSt('atualizar','dist','done',STEPS_ATU);
+    setSt('atualizar','testes','active',STEPS_ATU);
+    await sleep(200);
+    setSt('atualizar','testes','done',STEPS_ATU);
+    setSt('atualizar','gerar','active',STEPS_ATU);
+    await sleep(300);
+    setSt('atualizar','gerar','done',STEPS_ATU);
+
+    xlsxB64 = data.xlsx_b64;
+    lastCampistas = data.campistas || [];
+    novosCampistas = lastCampistas.filter(c => c._novo);
+
+    await sleep(300);
+    document.getElementById('pr-atualizar').classList.remove('vis');
+    showResultado(data);
+
+  } catch(err) {
+    setSt('atualizar','gerar','err',STEPS_ATU);
+    document.getElementById('err-atualizar').textContent = err.message;
+    document.getElementById('err-atualizar').classList.add('vis');
+    document.getElementById('pr-atualizar').classList.remove('vis');
+    document.getElementById('btn-atualizar').disabled = false;
+  }
+}
+
+function showResultado(data) {
+  document.getElementById('res-atualizar').classList.add('vis');
+  const camp = data.campistas || [];
+  const novos = camp.filter(c=>c._novo);
+  document.getElementById('res-sub').textContent =
+    `${camp.length} campistas · ${novos.length} novos · ${data.erros?.length||0} erros`;
+
+  // Avisos
+  const ab = document.getElementById('avisos-box'); ab.innerHTML='';
+  (data.erros||[]).forEach(e=>{
+    ab.innerHTML+=`<div class="aviso err">⚠️ ${e}</div>`;
+  });
+  (data.avisos||[]).forEach(a=>{
+    ab.innerHTML+=`<div class="aviso warn">ℹ️ ${a}</div>`;
+  });
+
+  // Summary cards
+  const sg = document.getElementById('sgrid');
+  sg.innerHTML = `
+    <div class="scard"><div class="num">${camp.length}</div><div class="lbl">Campistas</div></div>
+    <div class="scard"><div class="num">${novos.length}</div><div class="lbl">Novatos</div></div>
+    <div class="scard"><div class="num">${camp.filter(c=>c.sexo==='F').length}F / ${camp.filter(c=>c.sexo==='M').length}M</div><div class="lbl">Sexo</div></div>
+    <div class="scard"><div class="num">${data.erros?.length||0}</div><div class="lbl">Erros</div></div>
+  `;
+
+  // Novatos box
+  if (novos.length > 0) {
+    document.getElementById('novatos-box').style.display = 'block';
+    const nl = document.getElementById('novatos-list');
+    nl.innerHTML = novos.map(c=>`
+      <div class="novato-row">
+        <span style="font-family:Cinzel,serif;font-size:11px;color:var(--gold);width:40px">FC${c.fc}</span>
+        <span style="flex:1;font-weight:600">${c.nome}</span>
+        <span style="font-size:12px;padding:2px 8px;border-radius:10px;background:${'FF'+TRIBO_COR[c.tribo]?.replace('#','')};color:${TRIBO_TXT[c.tribo]||'#000'}">${c.tribo}</span>
+      </div>`).join('');
+  }
+
+  // Tribos grid
+  const tg = document.getElementById('tgrid');
+  const triboMap = {};
+  camp.forEach(c=>{
+    if(!triboMap[c.tribo]) triboMap[c.tribo]={f:0,m:0};
+    if(c.sexo==='F') triboMap[c.tribo].f++;
+    else triboMap[c.tribo].m++;
+  });
+  tg.innerHTML = TRIBOS.map(t=>{
+    const d = triboMap[t]||{f:0,m:0};
+    const ok = d.f===d.m;
+    const cor = TRIBO_COR[t]||'#888';
+    const txt = TRIBO_TXT[t]||'#000';
+    return `<div class="tcard" style="background:${cor}20;border-color:${cor}50">
+      <div class="tcard-h"><div class="tdot" style="background:${cor}"></div><span class="tcard-nm">${t}</span></div>
+      <div class="tcard-st">${d.f}F · ${d.m}M ${ok?'✅':'⚠️'}</div>
+    </div>`;
+  }).join('');
+}
+
+function dlXlsx() {
+  if (!xlsxB64) return;
+  const bytes = atob(xlsxB64);
+  const arr = new Uint8Array(bytes.length);
+  for (let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i);
+  const blob = new Blob([arr], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download = `Tribos_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+async function doEtiquetasNovos() {
+  if (!novosCampistas.length) { alert('Nenhum novato nesta atualização.'); return; }
+  await gerarEtiquetasLista(novosCampistas, 4);
+}
+
+// ── Conflitos ──────────────────────────────────────────────────
+async function loadConflitos() {
+  const list = document.getElementById('conf-list');
+  try {
+    const r = await fetch('/api/restricoes');
+    const data = await r.json();
+    const rest = data.restricoes || [];
+    if (!rest.length) {
+      list.innerHTML = '<div class="conf-empty">Nenhuma restrição cadastrada.</div>';
+      return;
+    }
+    list.innerHTML = rest.map((r,i) => `
+      <div class="conf-item">
+        <div>
+          <span class="ci-nome">${r.campista}</span>
+          ${r.fc ? `<span style="font-size:11px;color:var(--ash);margin-left:6px">FC${r.fc}</span>` : ''}
+        </div>
+        <div class="ci-motivo">${r.motivo || ''}</div>
+        <button class="ci-del" onclick="delConflito(${i})">Remover</button>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="conf-empty" style="color:var(--danger)">Erro ao carregar: ${e.message}</div>`;
+  }
+}
+
+function updateConflitoCampos() {
+  const tipo = document.getElementById('cf-tipo').value;
+  const labels = {
+    nunca_tribo:        'Tribo(s) proibida(s)',
+    nunca_com_anjo:     'Nome do Anjo',
+    nunca_com_guardiao: 'Nome do Guardião',
+    sempre_com_anjo:    'Nome do Anjo',
+    sempre_com_guardiao:'Nome do Guardião',
+  };
+  document.getElementById('cf-val-label').textContent = labels[tipo] || 'Valor';
+  const ph = {
+    nunca_tribo:'Ex: Zabulom, Issacar',
+    nunca_com_anjo:'Ex: Erika',
+    nunca_com_guardiao:'Ex: Pedro',
+    sempre_com_anjo:'Ex: Lucas Assis',
+    sempre_com_guardiao:'Ex: Marla',
+  };
+  document.getElementById('cf-val').placeholder = ph[tipo] || '';
+}
+
+async function addConflito() {
+  const nome   = document.getElementById('cf-nome').value.trim();
+  const fc     = document.getElementById('cf-fc').value;
+  const tipo   = document.getElementById('cf-tipo').value;
+  const val    = document.getElementById('cf-val').value.trim();
+  const motivo = document.getElementById('cf-motivo').value.trim();
+  const err    = document.getElementById('err-conflito');
+  err.classList.remove('vis');
+
+  if (!nome) { err.textContent='Nome do campista é obrigatório.'; err.classList.add('vis'); return; }
+  if (!val)  { err.textContent='Preencha o campo de restrição.';  err.classList.add('vis'); return; }
+
+  const obj = { campista: nome, motivo: motivo || `${tipo}: ${val}` };
+  if (fc) obj.fc = parseInt(fc);
+  if (tipo === 'nunca_tribo')         obj.nunca_tribo = val.split(',').map(s=>s.trim());
+  if (tipo === 'nunca_com_anjo')      obj.nunca_com_anjo = val;
+  if (tipo === 'nunca_com_guardiao')  obj.nunca_com_guardiao = val;
+  if (tipo === 'sempre_com_anjo')     obj.sempre_com_anjo = val;
+  if (tipo === 'sempre_com_guardiao') obj.sempre_com_guardiao = val;
+
+  try {
+    const r = await fetch('/api/conflito',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)});
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    // Limpa form
+    ['cf-nome','cf-fc','cf-val','cf-motivo'].forEach(id => document.getElementById(id).value='');
+    loadConflitos();
+  } catch(e) {
+    err.textContent = e.message; err.classList.add('vis');
+  }
+}
+
+async function delConflito(idx) {
+  if (!confirm('Remover esta restrição?')) return;
+  try {
+    const r = await fetch('/api/del_conflito',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idx})});
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    loadConflitos();
+  } catch(e) { alert(e.message); }
+}
+
+// ── Etiquetas ──────────────────────────────────────────────────
+async function doEtiquetas() {
+  const quem   = document.querySelector('input[name="eta-quem"]:checked').value;
+  const copias = parseInt(document.getElementById('eta-copias').value) || 4;
+  const err    = document.getElementById('err-etiquetas');
+  err.classList.remove('vis');
+  document.getElementById('eta-result').style.display = 'none';
+
+  let campistas = quem === 'todos' ? lastCampistas : novosCampistas;
+  if (!campistas.length) {
+    err.textContent = quem === 'todos'
+      ? 'Faça uma atualização primeiro para ter a lista de campistas.'
+      : 'Nenhum novato disponível. Faça uma atualização primeiro.';
+    err.classList.add('vis'); return;
+  }
+  await gerarEtiquetasLista(campistas, copias);
+}
+
+async function gerarEtiquetasLista(campistas, copias) {
+  const err = document.getElementById('err-etiquetas');
+  try {
+    const r = await fetch('/api/etiquetas',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({campistas, copias})
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    zplB64 = d.zpl_b64;
+    document.getElementById('eta-msg').textContent =
+      `✅ ${d.n_etiquetas} etiquetas geradas (${campistas.length} campistas × ${copias} cópias)`;
+    document.getElementById('eta-result').style.display = 'block';
+    goPage('p-etiquetas');
+  } catch(e) {
+    document.getElementById('err-etiquetas').textContent = e.message;
+    document.getElementById('err-etiquetas').classList.add('vis');
+    goPage('p-etiquetas');
+  }
+}
+
+function dlZpl() {
+  if (!zplB64) return;
+  const blob = new Blob([atob(zplB64)], {type:'application/octet-stream'});
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download = `Etiquetas_${new Date().toISOString().slice(0,10)}.zpl`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ── Utils ──────────────────────────────────────────────────────
+function sleep(ms) { return new Promise(r => setTimeout(r,ms)); }
+</script>
+</body>
+</html>
