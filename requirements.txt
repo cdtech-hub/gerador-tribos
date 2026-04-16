@@ -1,0 +1,7 @@
+flask
+pandas
+openpyxl
+numpy
+chardet
+xlrd
+reportlab
