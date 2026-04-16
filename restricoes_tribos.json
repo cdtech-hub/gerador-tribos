@@ -1,0 +1,68 @@
+{
+  "restricoes": [
+    {
+      "campista": "Marcus Vinicius de Oliveira Rodrigues",
+      "fc": 94,
+      "nunca_tribo": [
+        "Issacar"
+      ],
+      "motivo": "Conflito com a tribo Issacar"
+    },
+    {
+      "campista": "Maria Aparecida Fonseca Pereira",
+      "fc": 95,
+      "nunca_com_anjo": "Marla",
+      "motivo": "Nunca pode estar na tribo cuja Anja seja Marla"
+    },
+    {
+      "campista": "Nádia Regina Coelho Moura",
+      "fc": 110,
+      "nunca_com_guardiao": "Erika",
+      "motivo": "Nunca pode estar na tribo cuja Anjo Guardião seja Erika"
+    },
+    {
+      "campista": "EDMAR DE PAULA SILVA",
+      "fc": 35,
+      "nunca_com_guardiao": "Pedro",
+      "motivo": "Nunca pode estar na tribo cujo Anjo Guardião seja Pedro"
+    },
+    {
+      "campista": "Celma Maria de Queiroz Silva",
+      "fc": 24,
+      "nunca_tribo": [
+        "Zabulom"
+      ],
+      "motivo": "Retirada do Zabulom a pedido da organização"
+    },
+    {
+      "campista": "Fernanda Roncolato",
+      "fc": 43,
+      "nunca_tribo": [
+        "Zabulom"
+      ],
+      "motivo": "Retirada do Zabulom a pedido da organização"
+    },
+    {
+      "campista": "Nara Campos Terra",
+      "fc": 104,
+      "nunca_tribo": [
+        "Zabulom"
+      ],
+      "motivo": "Retirada do Zabulom a pedido da organização"
+    },
+    {
+      "campista": "Hélio Cananéia Miranda Junior",
+      "fc": 56,
+      "sempre_tribo": "Issacar",
+      "nunca_com_anjo": "Lucas Assis",
+      "motivo": "Deve SEMPRE estar no Issacar — anjo Lucas Assis é do Issacar"
+    },
+    {
+      "campista": "luciano costa",
+      "fc": 83,
+      "sempre_tribo": "Issacar",
+      "motivo": "Deve SEMPRE estar no Issacar — anjo Lucas Assis é do Issacar"
+    }
+  ],
+  "obs": "Atualizado em 16/04/2026 17:43"
+}
