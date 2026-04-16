@@ -23,7 +23,7 @@ from datetime import datetime
 
 # ══════════════════════════════════════
 SENHA   = "acampamento2026"   # ← TROQUE
-PORT    = 8000
+PORT = int(os.environ.get('PORT', 8000))
 DIR     = os.path.dirname(os.path.abspath(__file__))
 MODELO  = os.path.join(DIR, 'VIII_MODELO.xlsx')
 RESTRICOES_FILE = os.path.join(DIR, 'restricoes_tribos.json')
@@ -178,7 +178,7 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path in ('/', '/index.html'):
             if self._authed():
-                self._serve_file('index.html', 'text/html; charset=utf-8')
+                self._serve_file('gerador_tribos.html', 'text/html; charset=utf-8')
             else:
                 self._serve_login()
         elif path == '/api/restricoes':
